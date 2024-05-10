@@ -20,17 +20,24 @@ model UserGroup {
 }
 
 model Group {
-  id         Int         @id @default(autoincrement())
-  name       String
-  created_at DateTime
-  UserGroup  UserGroup[]
+  id               Int         @id @default(autoincrement())
+  name             String
+  master           User        @relation("MasterRelation",fields: [masterId], references: [id])
+  masterId         Int
+  isModerator      Boolean
+  moderator        User?       @relation("ModeratorRelation",fields: [moderatorId], references: [id])
+  moderatorId      Int?
+  created_at       DateTime
+  UserGroup        UserGroup[]
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  hash       String      @unique
-  created_at DateTime
-  UserGroup  UserGroup[]
+  id               Int         @id @default(autoincrement())
+  hash             String      @unique
+  created_at       DateTime
+  UserGroup        UserGroup[]
+  masterOf         Group[]     @relation("MasterRelation")
+  moderatorOf      Group[]     @relation("ModeratorRelation")
 }
 
 enum Role {
