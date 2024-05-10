@@ -24,7 +24,6 @@ model Group {
   name             String
   master           User        @relation("MasterRelation",fields: [masterId], references: [id])
   masterId         Int
-  isModerator      Boolean
   moderator        User?       @relation("ModeratorRelation",fields: [moderatorId], references: [id])
   moderatorId      Int?
   created_at       DateTime

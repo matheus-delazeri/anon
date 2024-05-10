@@ -22,8 +22,7 @@ export class GroupRepository {
                 name: groupName,
                 master: {
                     connect: {id: master.id}
-                },
-                isModerator: true
+                }
             }
         });
     }
