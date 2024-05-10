@@ -1,5 +1,4 @@
 import { PrismaClient, Group } from "@prisma/client";
-import { UserRepository } from "./user";
 
 export class GroupRepository {
     private prisma: PrismaClient;
@@ -9,28 +8,43 @@ export class GroupRepository {
     }
 
     async createGroup(masterId: number, groupName: string): Promise<Group | boolean>{
-        const userRepository = new UserRepository(this.prisma);
-        const master = await userRepository.getUserById(masterId);
-
-        if(!master){
-            throw new Error("Group master not found!")
-        }
-
         return this.prisma.group.create({
             data: {
                 created_at: new Date(),
                 name: groupName,
                 master: {
-                    connect: {id: master.id}
+                    connect: {id: masterId}
                 }
             }
         });
     }
 
-    async renameGroup(id: number, newName: string): Promise<Group | null>{
-        return this.prisma.group.update({
-            where: {id},
-            data: {name: newName}
+    async updateGroup(id: number, newName: string, newModerator: number | null): Promise<Group | null>{
+        //An update may or may not have a moderator
+        if (!newModerator){    
+            return this.prisma.group.update({
+                where: {id},
+                data: {
+                    name: newName,
+                }
+            })
+        }
+        else{
+            return this.prisma.group.update({
+                where: {id},
+                data: {
+                    name: newName,
+                    moderator: {
+                        connect: {id: newModerator}
+                    }
+                }
+            })
+        }
+    }
+
+    async deleteGroup(id: number): Promise<Group>{
+        return this.prisma.group.delete({
+            where: {id}
         })
     }
 
@@ -43,12 +57,6 @@ export class GroupRepository {
     async getGroupByName(name: string): Promise<Group[] | null>{
         return this.prisma.group.findMany({
             where: {name: name}
-        })
-    }
-
-    async deleteGroup(id: number): Promise<Group>{
-        return this.prisma.group.delete({
-            where: {id}
         })
     }
 }
