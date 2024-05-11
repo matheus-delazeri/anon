@@ -1,84 +1,67 @@
 import { $Enums, UserGroup } from "@prisma/client";
 
 import { UserGroupRepository } from "../repositories/userGroup";
+import { UserRepository } from "../repositories/user";
+import { GroupRepository } from "../repositories/group";
 
 
 export class UserGroupService {
     private userGroupRepository: UserGroupRepository;
+    private userRepository: UserRepository;
+    private groupRepository: GroupRepository;
 
-    constructor(userGroupRepository: UserGroupRepository){
+    constructor(userGroupRepository: UserGroupRepository, userRepository: UserRepository, groupRepository: GroupRepository){
         this.userGroupRepository = userGroupRepository;
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
     }
 
     //Search
     async getUserGroup(userId: number, groupId: number): Promise<UserGroup | null>{
+        await this.testUserId(userId);
+        await this.testGroupId(groupId);
+    
         return this.userGroupRepository.getUserGroup(userId, groupId);
     }
 
     async getUsersFromGroup(groupId: number): Promise<UserGroup[] | null>{
+        await this.testGroupId(groupId);
+
         return this.userGroupRepository.getUsersFromGroup(groupId);
     }
 
     async getGroupsOfUser(userId: number): Promise<UserGroup[] | null>{
+        await this.testUserId(userId);
+
         return this.userGroupRepository.getGroupsOfUser(userId);
     }
 
     //Manipulation
     async addUserToGroup(requesterId: number, userId: number, groupId: number, role: string): Promise<UserGroup>{
-        const requester = await this.getUserGroup(requesterId, groupId);
+        await this.testUserId(userId);
+        await this.testGroupId(groupId);
+        await this.testUserId(requesterId);
+        await this.testRequesterAdminRole(requesterId, groupId);
 
-        if (!requester){
-            throw new Error("Invalid requester");
-        }
-        else{
-            if(requester.role == $Enums.Role.ADMIN || requester.role == $Enums.Role.MODERATOR){
-                return this.userGroupRepository.addUserToGroup(userId, groupId, this.stringToRole(role));
-            }
-            else{
-                throw new Error("Access denied");
-            }
-        }
+        return this.userGroupRepository.addUserToGroup(userId, groupId, this.stringToRole(role));
     }
 
     async updateRole(requesterId: number,userId: number, groupId: number, role: string): Promise<UserGroup | null>{
-        const requester = await this.getUserGroup(requesterId, groupId);
+        await this.testUserId(userId);
+        await this.testGroupId(groupId);
+        await this.testUserId(requesterId);
+        await this.testRequesterAdminRole(requesterId, groupId);
 
-        if (!requester){
-            throw new Error("Invalid requester");
-        }
-        else{
-            if(requester.role == $Enums.Role.ADMIN || requester.role == $Enums.Role.MODERATOR){
-                return this.userGroupRepository.updateRole(userId, groupId, this.stringToRole(role));
-            }
-            else{
-                throw new Error("Access denied");
-            }
-        }
+        return this.userGroupRepository.updateRole(userId, groupId, this.stringToRole(role));
     }
 
     async deleteUserFromGroup(requesterId: number,userId: number, groupId: number): Promise<Boolean>{
-        const requester = await this.getUserGroup(requesterId, groupId);
+        await this.testUserId(userId);
+        await this.testGroupId(groupId);
+        await this.testUserId(requesterId);
+        await this.testRequesterAdminRole(requesterId, groupId);
 
-        if (!requester){
-            throw new Error("Invalid requester");
-        }
-        else{
-            if(requester.role == $Enums.Role.ADMIN || requester.role == $Enums.Role.MODERATOR){
-                return this.userGroupRepository.deleteUserFromGroup(userId, groupId);
-            }
-            else{
-                throw new Error("Access denied");
-            }
-        }
-    }
-
-    //Manipulation when deleting a group or user (inside the system)
-    async deleteAllUsersFromGroup(groupId: number): Promise<Boolean>{
-        return this.userGroupRepository.deleteAllUsersFromGroup(groupId);
-    }
-
-    async deleteAllGroupsFromUser(userId: number): Promise<Boolean>{
-        return this.userGroupRepository.deleteAllGroupsFromUser(userId);
+        return this.userGroupRepository.deleteUserFromGroup(userId, groupId);
     }
 
     //Conversion of a string role for a Role role
@@ -92,6 +75,50 @@ export class UserGroupService {
                 return $Enums.Role.MODERATOR; 
             default:
                 throw new Error("Invalid role");
+        }
+    }
+
+    //Tests
+
+    //Tests if the user exists in the database
+    private async testUserId(userId: number) {
+        if (userId){
+            const userExists = await this.userRepository.exists(userId);
+        
+            if (!userExists) {
+                throw new Error('User does not exist in the database');
+            }
+        }
+        else{
+            throw new Error('Invalid user id');
+        }
+    }
+
+    //Tests if the group exists in the database
+    private async testGroupId(groupId: number) {
+        if (groupId){
+            const groupExists = await this.groupRepository.exists(groupId);
+        
+            if (!groupExists) {
+                throw new Error('Group does not exist in the database');
+            }
+        }
+        else{
+            throw new Error('Invalid group id');
+        }
+    }
+
+    //Tests if the requester is an admin
+    private async testRequesterAdminRole(requesterId: number, groupId: number) {
+        const requester = await this.getUserGroup(requesterId, groupId);
+
+        if (!requester){
+            throw new Error("Invalid requester");
+        }
+        else{
+            if(requester.role != $Enums.Role.ADMIN){
+                throw new Error("Access denied");
+            }
         }
     }
 }
