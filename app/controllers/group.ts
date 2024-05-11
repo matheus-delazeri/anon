@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
-import { GroupRepository } from "../repositories/group";
 import { GroupService } from "../services/group";
 
-const groupService = new GroupService(new GroupRepository(prisma));
+const groupService = new GroupService(prisma);
 
 export const getGroupById = async (req: Request, res: Response) => {
     try {
@@ -40,10 +39,10 @@ export const getGroupByName = async (req: Request, res: Response) => {
 
 export const createGroup = async (req: Request, res: Response) => {
     try{
-        const adminId = parseInt(req.body.adminId);
+        const requesterId = parseInt(req.body.requesterId);
         const groupName = req.body.name;
 
-        const group = await groupService.createGroup(adminId, groupName);
+        const group = await groupService.createGroup(requesterId, groupName);
         
         if (group){
             res.json(group);
@@ -59,11 +58,10 @@ export const createGroup = async (req: Request, res: Response) => {
 export const updateGroup = async (req: Request, res: Response) => {
     try{
         const groupId = parseInt(req.params.id);
-        const adminId = parseInt(req.body.adminId);
+        const requesterId = parseInt(req.body.requesterId);
         const groupName = req.body.groupName;
-        var moderatorId: number | null = parseInt(req.body.moderatorId);
 
-        const group = await groupService.updateGroup(adminId, groupId, groupName, moderatorId);
+        const group = await groupService.updateGroup(requesterId, groupId, groupName);
 
         if (group){
             res.json(group);
@@ -79,13 +77,9 @@ export const updateGroup = async (req: Request, res: Response) => {
 export const deleteGroup = async (req: Request, res: Response) => {
     try{
         const groupId = parseInt(req.params.id);
-        const adminId = parseInt(req.body.adminId);
+        const requesterId = parseInt(req.body.requesterId);
 
-        if (!(isNaN(adminId) || isNaN(groupId))){
-            throw new Error("Some id's are not numbers!");
-        }
-
-        if (await groupService.deleteGroup(adminId, groupId)){
+        if (await groupService.deleteGroup(requesterId, groupId)){
             res.json({status: true, message: 'Group succesfully deleted'});
         }
         else{
