@@ -8,12 +8,12 @@ router.get("/id/:id", getGroupById);
 router.get("/name/:name", getGroupByName);
 
 //Post
-router.post("/", createGroup);
+router.post("/create/", createGroup);
 
 //Put
-router.put("/", updateGroup);
+router.put("/update/:id", updateGroup);
 
 //Delete
-router.delete("/", deleteGroup)
+router.delete("/delete/:id", deleteGroup)
 
 export default router;

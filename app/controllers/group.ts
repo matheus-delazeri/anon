@@ -58,8 +58,8 @@ export const createGroup = async (req: Request, res: Response) => {
 
 export const updateGroup = async (req: Request, res: Response) => {
     try{
+        const groupId = parseInt(req.params.id);
         const masterId = parseInt(req.body.masterId);
-        const groupId = parseInt(req.body.groupId);
         const groupName = req.body.groupName;
         var moderatorId: number | null = parseInt(req.body.moderatorId);
 
@@ -78,8 +78,8 @@ export const updateGroup = async (req: Request, res: Response) => {
 
 export const deleteGroup = async (req: Request, res: Response) => {
     try{
+        const groupId = parseInt(req.params.id);
         const masterId = parseInt(req.body.masterId);
-        const groupId = parseInt(req.body.groupId);
 
         if (!(isNaN(masterId) || isNaN(groupId))){
             throw new Error("Some id's are not numbers!");
