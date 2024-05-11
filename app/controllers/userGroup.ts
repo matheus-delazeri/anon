@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
 import { UserGroupService } from "../services/userGroup";
