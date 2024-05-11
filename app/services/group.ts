@@ -1,94 +1,100 @@
 import { GroupRepository } from "../repositories/group";
 import { UserRepository } from "../repositories/user";
+import { UserGroupRepository } from "../repositories/userGroup";
 
-import { prisma } from "../prisma";
-import { Group } from "@prisma/client";
+import { $Enums, Group, PrismaClient } from "@prisma/client";
 
 export class GroupService {
     private groupRepository: GroupRepository;
+    private userRepository: UserRepository;
+    private userGroupRepository: UserGroupRepository;
 
-    constructor(groupRepository: GroupRepository) {
-        this.groupRepository = groupRepository;
+    constructor(prisma: PrismaClient) {
+        this.groupRepository = new GroupRepository(prisma);
+        this.userRepository = new UserRepository(prisma);
+        this.userGroupRepository = new UserGroupRepository(prisma);
     }
 
-    async createGroup(adminId: number, groupName: string): Promise<Group>{
-        const userRepository = new UserRepository(prisma);
-        const master = await userRepository.getUserById(adminId);
-
-        if(!master){
-            throw new Error("Group master not found!");
-        }
-
-        return this.groupRepository.createGroup(master.id, groupName);
-    }
-
-    async updateGroup(adminId: number, groupId: number, newName: string, newModeratorId: number): Promise<Group | null>{
-        const group = await this.permissionCheck(adminId, groupId);
-
-        //Tests if the parse was succesful
-        if (!(isNaN(adminId) || isNaN(groupId) || isNaN(newModeratorId))){
-            throw new Error("Some id's are not numbers!");
-        }
-        
-        //If the moderator was not inserted (id smaller than 0) sets the aux variable to null (not inserted) 
-        let auxModeratorId: number | null = newModeratorId;
-        if (auxModeratorId <= 0){
-            auxModeratorId = null;
-        } 
-        else {
-            //Tests if the moderator was altered
-            if (auxModeratorId !== group.moderatorId){
-                //Searchs if the moderator exists in the database
-                const userRepository = new UserRepository(prisma);
-                const moderator = await userRepository.getUserById(auxModeratorId);
-
-                //Throw an error if there is no moderator with this id(null)
-                if (!moderator){
-                    throw new Error("Moderator not found!");
-                }
-            }
-        }
-
-        //Return the updated group or null (error)
-        return this.groupRepository.updateGroup(groupId, newName, auxModeratorId);
-    }
-
+    //Search
     async getGroupById(id: number): Promise<Group | null> {
-        //Return the requested group or null (was not found/error)
         return this.groupRepository.getGroupById(id);
     }
 
     async getGroupByName(name: string): Promise<Group[] | null> {
-        //Return a array of groups withe the requested name or null (was not found/error)
         return this.groupRepository.getGroupByName(name);
     }
 
-    async deleteGroup(adminId: number,groupId: number): Promise<Boolean> {
-        this.permissionCheck(adminId, groupId);
 
-        //
-        if (await this.groupRepository.deleteGroup(groupId)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    
-    //Checks if the group's master and the received master are the same (Permission)
-    private async permissionCheck(userId: number,groupId: number): Promise<Group> {
-        const group = await this.groupRepository.getGroupById(groupId);
-        const 
+    //Manipulation
+    async createGroup(requesterId: number, groupName: string): Promise<Group>{
+        await this.testUserId(requesterId);
 
-        if (!group){
-            throw new Error("Group not found");
-        }
-        else{
-            if (group.adminId != adminId){
-                throw new Error("Permission Denied!");
-            }
-        }
+        const group = await this.groupRepository.createGroup(groupName);
+        
+        //Creates a UserGroup with the requester as the admin
+        await this.userGroupRepository.addUserToGroup(requesterId, group.id, $Enums.Role.ADMIN);
 
         return group;
+    }
+
+    async updateGroup(requesterId: number, groupId: number, newName: string): Promise<Group | null>{
+        await this.testUserId(requesterId);
+        await this.testGroupId(groupId);
+        await this.permissionCheck(requesterId, groupId);
+
+        return this.groupRepository.updateGroup(groupId, newName);
+    }
+
+    async deleteGroup(requesterId: number,groupId: number): Promise<Boolean> {
+        await this.testUserId(requesterId);
+        await this.testGroupId(groupId);
+        await this.permissionCheck(requesterId, groupId);
+
+        await this.userGroupRepository.deleteAllUsersFromGroup(groupId);
+
+        return await this.groupRepository.deleteGroup(groupId);
+    }
+
+    //Tests
+
+    //Tests if the user exists in the database
+    private async testUserId(userId: number) {
+        if (userId){
+            const userExists = await this.userRepository.exists(userId);
+        
+            if (!userExists) {
+                throw new Error('User does not exist in the database');
+            }
+        }
+        else{
+            throw new Error('Invalid user id');
+        }
+    }
+
+    //Tests if the group exists in the database
+    private async testGroupId(groupId: number) {
+        if (groupId){
+            const groupExists = await this.groupRepository.exists(groupId);
+        
+            if (!groupExists) {
+                throw new Error('Group does not exist in the database');
+            }
+        }
+        else{
+            throw new Error('Invalid group id');
+        }
+    }
+
+    //Tests if the requester has the necessary permissions
+    private async permissionCheck(requesterId: number, groupId: number){
+        const userGroup = await this.userGroupRepository.getUserGroup(requesterId, groupId);
+
+        if (!userGroup){
+            throw new Error('User does not belong to the group');
+        }
+
+        if (userGroup.role != $Enums.Role.ADMIN){
+            throw new Error('User does not have the necessary permissions');
+        }
     }
 }
