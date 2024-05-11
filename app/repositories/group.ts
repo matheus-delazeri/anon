@@ -21,25 +21,13 @@ export class GroupRepository {
 
     async updateGroup(id: number, newName: string, newModerator: number | null): Promise<Group | null>{
         //An update may or may not have a moderator
-        if (!newModerator){    
-            return this.prisma.group.update({
-                where: {id},
-                data: {
-                    name: newName,
-                }
-            })
-        }
-        else{
-            return this.prisma.group.update({
-                where: {id},
-                data: {
-                    name: newName,
-                    moderator: {
-                        connect: {id: newModerator}
-                    }
-                }
-            })
-        }
+        return this.prisma.group.update({
+            where: {id},
+            data: {
+                name: newName,
+                ...(newModerator ? { moderator: { connect: {id: newModerator} } } : {})
+            }
+        });
     }
 
     async deleteGroup(id: number): Promise<Group>{
