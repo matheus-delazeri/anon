@@ -56,13 +56,18 @@ export class GroupService {
         return this.groupRepository.getGroupByName(name);
     }
 
-    async deleteGroup(masterId: number,groupId: number) {
+    async deleteGroup(masterId: number,groupId: number): Promise<Boolean> {
         this.permissionCheck(masterId, groupId);
 
-        await this.groupRepository.deleteGroup(groupId);
+        if (await this.groupRepository.deleteGroup(groupId)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     
-    //Checks if the group's master and the received master are the same
+    //Checks if the group's master and the received master are the same (Permission)
     private async permissionCheck(masterId: number,groupId: number): Promise<Group> {
         const group = await this.groupRepository.getGroupById(groupId);
 

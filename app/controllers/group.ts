@@ -68,7 +68,7 @@ export const updateGroup = async (req: Request, res: Response) => {
         if (group){
             res.json(group);
         } else{
-            res.status(400).json({message: 'Could not update that group'});
+            res.status(400).json({message: 'Could not update the group'});
         }
     } catch (error) {
         console.error('Error updating group: ', error);
@@ -85,10 +85,14 @@ export const deleteGroup = async (req: Request, res: Response) => {
             throw new Error("Some id's are not numbers!");
         }
 
-        await groupService.deleteGroup(masterId, groupId);
+        if (await groupService.deleteGroup(masterId, groupId)){
+            res.json({status: true, message: 'Group succesfully deleted'});
+        }
+        else{
+            res.status(400).json({message: 'Could not delete the group'});
+        }
     }catch (error){
         console.error("Error deleting group: ", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
-
