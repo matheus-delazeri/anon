@@ -20,17 +20,17 @@ model UserGroup {
 }
 
 model Group {
-  id         Int         @id @default(autoincrement())
-  name       String
-  created_at DateTime
-  UserGroup  UserGroup[]
+  id               Int         @id @default(autoincrement())
+  name             String
+  created_at       DateTime
+  UserGroup        UserGroup[]
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  hash       String      @unique
-  created_at DateTime
-  UserGroup  UserGroup[]
+  id               Int         @id @default(autoincrement())
+  hash             String      @unique
+  created_at       DateTime
+  UserGroup        UserGroup[]
 }
 
 enum Role {

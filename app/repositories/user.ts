@@ -7,6 +7,14 @@ export class UserRepository {
         this.prisma = prismaClient;
     }
 
+    async exists(id: number): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: {id}
+        });
+
+        return !!user;
+    }
+
     async createUser(hash: string): Promise<User | boolean> {
         return this.prisma.user.create({
             data: {
