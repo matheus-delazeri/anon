@@ -1,4 +1,4 @@
-import { $Enums, UserGroup } from "@prisma/client";
+import { $Enums, UserGroup, PrismaClient } from "@prisma/client";
 
 import { UserGroupRepository } from "../repositories/userGroup";
 import { UserRepository } from "../repositories/user";
@@ -10,10 +10,10 @@ export class UserGroupService {
     private userRepository: UserRepository;
     private groupRepository: GroupRepository;
 
-    constructor(userGroupRepository: UserGroupRepository, userRepository: UserRepository, groupRepository: GroupRepository){
-        this.userGroupRepository = userGroupRepository;
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
+    constructor(prisma: PrismaClient){
+        this.userGroupRepository = new UserGroupRepository(prisma);
+        this.userRepository = new UserRepository(prisma);
+        this.groupRepository = new GroupRepository(prisma);
     }
 
     //Search
