@@ -40,10 +40,10 @@ export const getGroupByName = async (req: Request, res: Response) => {
 
 export const createGroup = async (req: Request, res: Response) => {
     try{
-        const masterId = parseInt(req.body.masterId);
+        const adminId = parseInt(req.body.adminId);
         const groupName = req.body.name;
 
-        const group = await groupService.createGroup(masterId, groupName);
+        const group = await groupService.createGroup(adminId, groupName);
         
         if (group){
             res.json(group);
@@ -59,11 +59,11 @@ export const createGroup = async (req: Request, res: Response) => {
 export const updateGroup = async (req: Request, res: Response) => {
     try{
         const groupId = parseInt(req.params.id);
-        const masterId = parseInt(req.body.masterId);
+        const adminId = parseInt(req.body.adminId);
         const groupName = req.body.groupName;
         var moderatorId: number | null = parseInt(req.body.moderatorId);
 
-        const group = await groupService.updateGroup(masterId, groupId, groupName, moderatorId);
+        const group = await groupService.updateGroup(adminId, groupId, groupName, moderatorId);
 
         if (group){
             res.json(group);
@@ -79,13 +79,13 @@ export const updateGroup = async (req: Request, res: Response) => {
 export const deleteGroup = async (req: Request, res: Response) => {
     try{
         const groupId = parseInt(req.params.id);
-        const masterId = parseInt(req.body.masterId);
+        const adminId = parseInt(req.body.adminId);
 
-        if (!(isNaN(masterId) || isNaN(groupId))){
+        if (!(isNaN(adminId) || isNaN(groupId))){
             throw new Error("Some id's are not numbers!");
         }
 
-        if (await groupService.deleteGroup(masterId, groupId)){
+        if (await groupService.deleteGroup(adminId, groupId)){
             res.json({status: true, message: 'Group succesfully deleted'});
         }
         else{
