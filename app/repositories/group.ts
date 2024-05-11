@@ -3,11 +3,19 @@ import { PrismaClient, Group } from "@prisma/client";
 export class GroupRepository {
     private prisma: PrismaClient;
 
-    constructor(prismaClient: PrismaClient){
-        this.prisma = prismaClient;
+    constructor(prisma: PrismaClient){
+        this.prisma = prisma;
     }
 
     //Search
+    async exists(id: number): Promise<boolean>{
+        const group = await this.prisma.group.findUnique({
+            where: {id}
+        });
+
+        return !!group;
+    }
+
     async getGroupById(id: number): Promise<Group | null>{
         return this.prisma.group.findUnique({
             where: {id}
@@ -39,9 +47,9 @@ export class GroupRepository {
         });
     }
 
-    async deleteGroup(id: number): Promise<Group>{
-        return this.prisma.group.delete({
+    async deleteGroup(id: number): Promise<boolean>{
+        return !!(this.prisma.group.delete({
             where: {id}
-        })
+        }))
     }
 }
