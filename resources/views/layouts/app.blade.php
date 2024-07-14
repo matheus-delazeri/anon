@@ -16,13 +16,13 @@
 </head>
 <body class="font-sans antialiased">
 <div class="min-h-screen flex justify-center relative items-center bg-gray-200 dark:bg-gray-900">
+    <x-toaster-hub />
     <div class="w-3/4 absolute bg-gray-100 dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-900"
          style="height: 90%">
         <div class="p-2" style="max-height: 7%">
             <livewire:layout.navigation/>
         </div>
 
-        <!-- Page Content -->
         <main class="overflow-y-auto" style="height: 93%">
             {{ $slot }}
         </main>

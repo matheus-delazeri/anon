@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('owner_id')->nullable(false)->constrained('users');
             $table->string('name')->nullable(false);
             $table->text('description')->nullable(false);
             $table->softDeletes();
@@ -24,7 +23,7 @@ return new class extends Migration
         Schema::create('room_user', function (Blueprint $table) {
             $table->foreignId('room_id');
             $table->foreignId('user_id');
-            $table->enum('role', UserRoleEnum::cases())->default(UserRoleEnum::PARTICIPANT);
+            $table->enum('role', UserRoleEnum::values());
             $table->boolean('is_banned')->default(false);
             $table->primary(['room_id', 'user_id']);
         });
@@ -34,7 +33,7 @@ return new class extends Migration
             $table->timestamp('created_at');
             $table->integer('expires_in')->default(3600);
             $table->foreignId('room_id')->nullable(false)->constrained('rooms');
-            $table->enum('role_granted', UserRoleEnum::cases());
+            $table->enum('role_granted', UserRoleEnum::values());
         });
     }
 

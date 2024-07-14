@@ -5,8 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,19 +14,19 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('parent_id')->nullable()->constrained('question');
+            $table->foreignId('parent_id')->nullable()->constrained('questions');
             $table->foreignId('moderator_id')->nullable()->constrained('users');
             $table->foreignId('room_id')->nullable(false)->constrained('rooms');
             $table->foreignId('user_id')->nullable(false)->constrained('users');
             $table->text('content')->nullable(false);
             $table->text('answer')->nullable();
-            $table->enum('status', QuestionStatusEnum::cases())->default(QuestionStatusEnum::PENDING);
+            $table->enum('status', QuestionStatusEnum::values());
         });
 
-        Schema::create('question_vote', function (Blueprint $table) {
+        Schema::create('question_votes', function (Blueprint $table) {
             $table->timestamps();
-            $table->foreignId('question_id');
-            $table->foreignId('user_id');
+            $table->foreignId('question_id')->constrained('questions');
+            $table->foreignId('user_id')->constrained('users');
             $table->enum('increment', [-1, 0, 1]);
             $table->primary(['question_id', 'user_id']);
         });
