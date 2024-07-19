@@ -19,11 +19,11 @@
     <x-toaster-hub />
     <div class="w-3/4 absolute bg-gray-100 dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-900"
          style="height: 90%">
-        <div class="p-2" style="height: 10%">
+        <div style="height: 10%">
             <livewire:layout.navigation/>
         </div>
 
-        <main class="p-2" style="height: 90%">
+        <main class="p-2" style="height: 90%; overflow-y: auto">
             {{ $slot }}
         </main>
     </div>
