@@ -49,6 +49,21 @@ class Room extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function creator()
+    {
+        return $this->users()->firstWhere('role', UserRoleEnum::ADMIN);
+    }
+
+    public function moderators()
+    {
+        return $this->users()->where('role', UserRoleEnum::MODERATOR);
+    }
+
+    public function participants()
+    {
+        return $this->users()->where('role', UserRoleEnum::PARTICIPANT);
+    }
+
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);

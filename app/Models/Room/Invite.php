@@ -7,6 +7,7 @@ use App\Models\Room;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Invite extends Model
 {
@@ -14,7 +15,8 @@ class Invite extends Model
 
     protected $fillable = [
         'expires_in',
-        'role_granted'
+        'role_granted',
+        'hash'
     ];
 
     protected $casts = [
@@ -22,8 +24,22 @@ class Invite extends Model
         'created_at' => 'datetime'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function($model){
+            $model->hash = Str::random();
+        });
+    }
+
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function link()
+    {
+        return route('invite', ['hash' => $this->hash]);
     }
 }
