@@ -28,11 +28,12 @@ return new class extends Migration
             $table->primary(['room_id', 'user_id']);
         });
 
-        Schema::create('room_invites', function (Blueprint $table) {
+        Schema::create('invites', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('created_at');
+            $table->timestamps();
             $table->integer('expires_in')->default(3600);
             $table->foreignId('room_id')->nullable(false)->constrained('rooms');
+            $table->char('hash', 16)->nullable(false);
             $table->enum('role_granted', UserRoleEnum::values());
         });
     }

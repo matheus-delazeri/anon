@@ -23,12 +23,12 @@ return new class extends Migration {
             $table->enum('status', QuestionStatusEnum::values());
         });
 
-        Schema::create('question_votes', function (Blueprint $table) {
+        Schema::create('votes', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
             $table->foreignId('question_id')->constrained('questions');
             $table->foreignId('user_id')->constrained('users');
-            $table->enum('increment', [-1, 0, 1]);
-            $table->primary(['question_id', 'user_id']);
+            $table->smallInteger('increment')->default(0);
         });
     }
 
