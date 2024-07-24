@@ -68,4 +68,10 @@ class Room extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function hasPrivileges(User $user)
+    {
+        return $this->moderators()->where('user_id', $user->id)->exists()
+            || $this->creator()->id == $user->id;
+    }
 }

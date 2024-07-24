@@ -16,9 +16,9 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white h-full dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
-    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8" style="margin-top: 1%">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -80,7 +80,7 @@ new class extends Component
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+        <div class="pt-4 pb-1 border-b-2 border-gray-200 dark:border-gray-600 relative bg-white dark:bg-gray-800 z-50">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
                 <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>

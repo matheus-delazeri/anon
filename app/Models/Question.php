@@ -46,7 +46,7 @@ class Question extends Model
     }
 
     /**
-     * Who declined or accepted the question
+     * Who declined or approved the question
      *
      * @return HasOne
      */
@@ -58,5 +58,40 @@ class Question extends Model
     public function votes(): HasMany
     {
         return $this->hasMany(Vote::class);
+    }
+
+    public function approved(): bool
+    {
+        return $this->status == QuestionStatusEnum::APPROVED;
+    }
+
+    public function answered(): bool
+    {
+        return $this->status == QuestionStatusEnum::ANSWERED;
+    }
+
+    public function pending(): bool
+    {
+        return $this->status == QuestionStatusEnum::PENDING;
+    }
+
+    /**
+     * Get the count of upvotes for the question.
+     *
+     * @return int
+     */
+    public function upvotesCount()
+    {
+        return $this->votes()->where('increment', '=', 1)->count();
+    }
+
+    /**
+     * Get the count of downvotes for the question.
+     *
+     * @return int
+     */
+    public function downvotesCount()
+    {
+        return $this->votes()->where('increment', '=', -1)->count();
     }
 }

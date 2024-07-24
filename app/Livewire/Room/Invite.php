@@ -14,6 +14,7 @@ class Invite extends Component
     public function mount(\App\Models\Room $room, int $role)
     {
         $this->room = $room;
+        $this->role = $role;
     }
 
     public function render()

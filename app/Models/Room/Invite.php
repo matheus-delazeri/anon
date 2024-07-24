@@ -42,4 +42,11 @@ class Invite extends Model
     {
         return route('invite', ['hash' => $this->hash]);
     }
+
+    public function isExpired()
+    {
+        $expiresAt = $this->created_at->addSeconds($this->expires_in);
+        return now()->greaterThan($expiresAt);
+    }
+
 }

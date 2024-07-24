@@ -5,7 +5,7 @@ namespace App\Enums;
 enum QuestionStatusEnum: int
 {
     case PENDING = 1;
-    case ACCEPTED = 2;
+    case APPROVED = 2;
     case DECLINED = 3;
     case ANSWERED = 4;
 
@@ -17,8 +17,8 @@ enum QuestionStatusEnum: int
     public function label(): string
     {
         return match($this) {
-            self::PENDING => 'Pending',
-            self::ACCEPTED => 'Accepted',
+            self::PENDING => 'Pending Approval',
+            self::APPROVED => 'Approved',
             self::DECLINED => 'Declined',
             self::ANSWERED => 'Answered'
         };

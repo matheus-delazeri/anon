@@ -8,10 +8,8 @@
     </p>
 
     @isset($invite)
-        <div class="mt-6">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Invite: :link', ['link' => $invite->link()]) }}
-            </p>
+        <div class="mt-6 text-sm text-gray-600 dark:text-gray-400">
+            {{ __('Invite: :link', ['link' => $invite->link()]) }}
         </div>
     @else
         <div class="mt-6 flex justify-end">
