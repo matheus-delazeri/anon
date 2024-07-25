@@ -75,6 +75,11 @@ class Question extends Model
         return $this->status == QuestionStatusEnum::PENDING;
     }
 
+    public function declined(): bool
+    {
+        return $this->status == QuestionStatusEnum::DECLINED;
+    }
+
     /**
      * Get the count of upvotes for the question.
      *
