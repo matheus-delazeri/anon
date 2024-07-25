@@ -92,13 +92,13 @@
             @if($question->approved()
             || $question->user->id == Auth::user()->id
             || $room->hasPrivileges(Auth::user()) )
-                <div class="m-2 p-4 rounded rounded-md bg-white shadow flex">
+                <div class="m-2 p-4 rounded rounded-md bg-white dark:bg-gray-800 shadow flex">
                     <div class="w-2/4">
                         <p class="mt-1 w-3/4 text-sm text-gray-600 dark:text-gray-400">
-                            <span class="font-semibold">{{__('Question')}}: </span>{{ $question->content }}
+                            <span class="font-semibold dark:text-white">{{__('Question')}}: </span>{{ $question->content }}
                         </p>
                         <p class="mt-1 w-3/4 text-sm text-gray-600 dark:text-gray-400">
-                            <span class="font-semibold">{{__('Status')}}: </span>{{ $question->status->label() }}
+                            <span class="font-semibold dark:text-white">{{__('Status')}}: </span>{{ $question->status->label() }}
                         </p>
                         <p class="mt-3 mb-2 w-3/4 text-sm text-gray-600 dark:text-gray-400">
                             <span>{{ $question->created_at }}</span>
@@ -107,7 +107,7 @@
                             <livewire:forms.answer-form :question="$question"/>
                         @elseif($question->answered())
                             <p class="mt-1 w-3/4 text-sm text-gray-600 dark:text-gray-400 border-t py-2">
-                                <span class="font-semibold">{{__('Answer')}}: </span>{{ $question->answer }}
+                                <span class="font-semibold dark:text-white">{{__('Answer')}}: </span>{{ $question->answer }}
                             </p>
                         @endif
                     </div>
