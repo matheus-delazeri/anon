@@ -16,11 +16,11 @@ enum QuestionStatusEnum: int
 
     public function label(): string
     {
-        return match($this) {
+        return __(match($this) {
             self::PENDING => 'Pending Approval',
             self::APPROVED => 'Approved',
             self::DECLINED => 'Declined',
             self::ANSWERED => 'Answered'
-        };
+        });
     }
 }
