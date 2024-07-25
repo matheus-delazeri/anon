@@ -1,8 +1,7 @@
 <form wire:submit.prevent="save"
-      class="bg-white h-[10%] dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-700 px-4 flex items-center gap-2">
-    <div class="w-full">
-        <x-text-input wire:model="content" id="content" placeholder="{{ __('Ask a question...') }}" class="w-full"
-                      type="text" name="content" required autofocus/>
+      class="bg-white dark:bg-gray-800 border rounded-md border-gray-100 dark:border-gray-700 px-4 py-2 flex items-center gap-2 h-fit">
+    <div class="w-full h-fit flex align-middle">
+    <x-textarea-input wire:model="content" :maxLenght="255" id="content" placeholder="{{ __('Ask a question...') }}" class="w-full" type="text" name="content" required autofocus/>
     </div>
     <x-primary-button style="margin-top: 0" type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">

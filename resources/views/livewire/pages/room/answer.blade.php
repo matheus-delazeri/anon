@@ -1,7 +1,6 @@
-<form wire:submit.prevent="save" class="flex gap-2 items-center justify-center">
-    <div class="w-full">
-        <x-text-input wire:model="answer" id="answer" placeholder="{{ __('Type your answerer here...') }}"
-                      class="w-full" type="text" name="answer" required autofocus/>
+<form wire:submit.prevent="save" class="flex gap-2 items-center justify-center w-full h-fit">
+    <div class="w-full h-fit flex align-middle">
+    <x-textarea-input wire:model="answer" :maxLenght="255" id="answer" placeholder="{{ __('Type your answerer here...') }}" class="w-full" type="text" name="answer" required autofocus/>
     </div>
     <x-primary-button style="margin-top: 0" type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">

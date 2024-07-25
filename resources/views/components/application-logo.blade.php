@@ -1,6 +1,6 @@
-<svg fill="#444444" height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-14.92 -14.92 179.09 179.09" xml:space="preserve"
-     stroke="#444444" stroke-width="0.0014924600000000001"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+<svg class="fill-gray-900 dark:fill-gray-200" height="50px" width="50px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-14.92 -14.92 179.09 179.09" xml:space="preserve">
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
     <g id="SVGRepo_iconCarrier">
         <g>
